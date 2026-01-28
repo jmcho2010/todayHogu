@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <!-- Prevent double-tap zoom and scale issues in mobile WebView -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="format-detection" content="telephone=no">
+  <title>Catch 1.0000s - Toss Mini Game</title>
+  <!-- Google Fonts: Noto Sans KR (SIL Open Font License - 상업적 사용 가능, 저작권 걱정 없음) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN for MVP -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Enable dark mode based on system preference
+    tailwind.config = {
+      darkMode: 'media' // Automatically follows system dark mode
+    }
+  </script>
+  <style>
+    /* TDS colors & minor global resets */
+    :root{
+      --bg: #F2F4F6; /* Light Gray */
+      --primary: #3182F6; /* Toss Blue */
+      --text: #191F28; /* Dark Gray */
+      --muted: #B0B8C1; /* Light Gray text */
+    }
+    /* Dark mode colors */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #191F28; /* Dark background */
+        --primary: #4593FC; /* Lighter blue for dark mode */
+        --text: #F2F4F6; /* Light text */
+        --muted: #6B7684; /* Muted gray for dark mode */
+      }
+    }
+    html,body,#app{height:100%;}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-family: 'Noto Sans KR', -apple-system, 'Apple SD Gothic Neo', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 500;
+      -webkit-user-select:none; /* prevent text selection */
+      user-select:none;
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+    }
+    /* Big rounded card center */
+    .card{border-radius:1rem}
+    /* Timer digit monospace look */
+    .timer{
+      font-variant-numeric: tabular-nums; 
+      font-feature-settings: 'tnum';
+      letter-spacing: 0.05em;
+    }
+    /* Make buttons large for comfortable touch */
+    .big-btn{
+      padding:16px 24px; 
+      border-radius:14px; 
+      font-weight:700;
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Prevent text wrapping in buttons */
+    button{white-space: nowrap;}
+    /* Confetti canvas overlay */
+    #confettiCanvas{position:fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:50}
+  </style>
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+  <div id="app" class="min-h-screen flex items-center justify-center p-4 sm:p-6">
+    <div class="w-full max-w-md mx-auto">
+      <div class="card bg-white dark:bg-[#1E2530] shadow-sm dark:shadow-lg p-5 sm:p-6 rounded-2xl">
+        <header class="flex items-start justify-between mb-5 gap-3">
+          <div class="flex-1 min-w-0">
+            <h1 class="text-xl sm:text-2xl font-bold text-[var(--text)] mb-1">Catch 1.0000s</h1>
+            <p id="modeDescription" class="text-xs sm:text-sm text-[var(--muted)]">정확히 1초에 멈춰보세요</p>
+          </div>
+          <div class="text-right text-xs text-[var(--muted)] flex-shrink-0">
+            <div id="bestRecord" class="whitespace-nowrap">최고: 없음</div>
+            <div id="bestDiff" class="whitespace-nowrap"></div>
+          </div>
+        </header>
+
+        <!-- Mode selector -->
+        <div class="mb-5">
+          <label class="text-xs sm:text-sm text-[var(--muted)] mb-2 block font-medium">모드 선택</label>
+          <div class="inline-flex rounded-full bg-[#eef6ff] dark:bg-[#2A3340] p-1 w-full sm:w-auto">
+            <button class="mode-btn flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-full text-[var(--primary)] font-bold" data-mode="1">1.0초</button>
+            <button class="mode-btn flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-full text-[var(--muted)] font-bold" data-mode="3">3.0초</button>
+            <button class="mode-btn flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-full text-[var(--muted)] font-bold" data-mode="5">5.0초</button>
+          </div>
+        </div>
+
+        <!-- Timer display -->
+        <div class="mb-6 text-center py-4">
+          <div id="timerDisplay" class="timer text-5xl sm:text-6xl md:text-7xl font-black tracking-tight text-[var(--text)] mb-2">?.????</div>
+          <div id="statusMsg" class="text-sm sm:text-base text-[var(--muted)] font-medium px-4">준비되면 시작을 눌러주세요</div>
+        </div>
+
+        <!-- Action button -->
+        <div class="mb-4 flex flex-col sm:flex-row gap-3">
+          <button id="actionBtn" class="big-btn flex-1 bg-[var(--primary)] text-white text-lg sm:text-xl font-black order-1">시작</button>
+          <button id="shareBtn" class="big-btn sm:w-20 bg-white dark:bg-[#2A3340] border border-gray-200 dark:border-gray-700 text-[var(--text)] font-bold text-sm sm:text-base order-2">공유</button>
+        </div>
+
+        <!-- Result detail area -->
+        <div id="resultArea" class="hidden bg-gray-50 dark:bg-[#2A3340] p-4 rounded-lg text-center">
+          <div id="resultText" class="font-bold text-base sm:text-lg text-[var(--text)]"></div>
+          <div id="resultSub" class="text-[var(--muted)] text-xs sm:text-sm mt-2"></div>
+        </div>
+
+        <!-- Toss Ads SDK Banner Slot - IMPORTANT: ONLY use Toss Ads SDK (External ad networks prohibited) -->
+        <div id="toss-ad-banner" class="mt-5 h-[60px] flex items-center justify-center border border-dashed border-gray-200 dark:border-gray-700 rounded-lg text-[var(--muted)] text-xs sm:text-sm font-medium bg-gray-50 dark:bg-[#2A3340] transition-all">
+          <span class="opacity-60">Toss Ads 배너</span>
+          <!--
+            CRITICAL: Toss Policy - ONLY Toss Ads SDK is allowed. NO Google AdSense, AdMob, or other networks.
+            
+            TODO: Integration Steps when Toss Ads SDK is ready:
+            1. Load Toss Ads SDK script in <head>:
+               <script src="https://ads.toss.im/sdk/v1/toss-ads.js"></script>
+            
+            2. Initialize SDK with your app key:
+               window.TossAds.init({ appKey: 'YOUR_APP_KEY' });
+            
+            3. Load banner ad into this container:
+               window.TossAds.loadBanner({
+                 containerId: 'toss-ad-banner',
+                 adUnitId: 'YOUR_BANNER_AD_UNIT_ID',
+                 onLoad: () => { logEvent('ad_impression', {ad_type: 'banner'}); },
+                 onError: (err) => { console.error('Toss Ad Load Failed:', err); }
+               });
+          -->
+        </div>
+      </div>
+      <p class="mt-3 text-xs text-center text-[var(--muted)] font-medium px-4">로컬 저장 · 서버 연동 준비됨</p>
+    </div>
+  </div>
+
+  <script type="module">
+    // Catch 1.0000s - Single File SPA
+    // Author: Senior Frontend (output for Toss mini-game)
+
+    // ============================================================
+    // ANALYTICS SYSTEM (GA4 / Firebase Analytics Compatible)
+    // ============================================================
+    /**
+     * Event tracking helper - compatible with Firebase Analytics & GA4
+     * @param {string} eventName - Event name (e.g., 'game_start', 'game_result')
+     * @param {Object} params - Event parameters
+     */
+    function logEvent(eventName, params = {}) {
+      // Console fallback for development
+      console.log(`[Analytics] ${eventName}`, params);
+      
+      // TODO: Replace with actual Firebase Analytics when integrated
+      // if (window.firebase && window.firebase.analytics) {
+      //   window.firebase.analytics().logEvent(eventName, params);
+      // }
+      
+      // TODO: Or use GA4 gtag if preferred
+      // if (window.gtag) {
+      //   window.gtag('event', eventName, params);
+      // }
+    }
+
+    // ============================================================
+    // TOSS ADS SDK INTEGRATION (Mock Implementation)
+    // ============================================================
+    /**
+     * Show Toss Interstitial Ad (Full-screen ad between game sessions)
+     * CRITICAL: Toss Policy - ONLY Toss Ads SDK allowed. NO external ad networks.
+     * @param {Function} onComplete - Callback to execute after ad is closed/skipped
+     */
+    function showTossInterstitialAd(onComplete) {
+      // Mock implementation - immediately execute callback
+      console.log('[Toss Ads] Interstitial Ad triggered (MOCK)');
+      
+      // Log analytics event
+      logEvent('ad_impression', { ad_type: 'interstitial', ad_network: 'toss' });
+      
+      // TODO: Replace with actual Toss Ads SDK when ready:
+      // if (window.TossAds && window.TossAds.showInterstitial) {
+      //   window.TossAds.showInterstitial({
+      //     adUnitId: 'YOUR_INTERSTITIAL_AD_UNIT_ID',
+      //     onClose: () => {
+      //       logEvent('ad_closed', { ad_type: 'interstitial' });
+      //       if (onComplete) onComplete();
+      //     },
+      //     onError: (err) => {
+      //       console.error('Toss Interstitial Ad Failed:', err);
+      //       if (onComplete) onComplete(); // Continue even if ad fails
+      //     }
+      //   });
+      // } else {
+      //   console.warn('Toss Ads SDK not loaded');
+      //   if (onComplete) onComplete();
+      // }
+      
+      // For now, immediately continue (mock)
+      if (onComplete) onComplete();
+    }
+
+    // Constants and config
+    const STORAGE_KEY = 'catch10000_best';
+    const stateEnum = { IDLE: 'IDLE', RUNNING: 'RUNNING', RESULT: 'RESULT' };
+
+    // DOM references
+    const timerDisplay = document.getElementById('timerDisplay');
+    const actionBtn = document.getElementById('actionBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const resultArea = document.getElementById('resultArea');
+    const resultText = document.getElementById('resultText');
+    const resultSub = document.getElementById('resultSub');
+    const bestRecordEl = document.getElementById('bestRecord');
+    const bestDiffEl = document.getElementById('bestDiff');
+    const shareBtn = document.getElementById('shareBtn');
+    const modeButtons = document.querySelectorAll('.mode-btn');
+    const modeDescription = document.getElementById('modeDescription');
+    const confettiCanvas = document.getElementById('confettiCanvas');
+
+    // Game variables
+    let appState = stateEnum.IDLE;
+    let startTime = 0;
+    let rafId = null;
+    let targetSeconds = 1.0; // default mode
+    let lastDuration = null; // last measured duration (seconds)
+
+    // Load best record from localStorage
+    function loadBest(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return null;
+        return JSON.parse(raw);
+      }catch(e){
+        console.error('Failed to load best', e);
+        return null;
+      }
+    }
+
+    function saveBest(best){
+      // best = {duration: number, diff: number, mode: number, iso: string}
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(best));
+      }catch(e){console.error('Failed to save best', e)}
+    }
+
+    function updateBestUI(){
+      const best = loadBest();
+      if(!best){
+        bestRecordEl.textContent = '최고: 없음';
+        bestDiffEl.textContent = '';
+        return;
+      }
+      bestRecordEl.textContent = `${best.duration.toFixed(4)}초`;
+      bestDiffEl.textContent = `오차 ${best.diff.toFixed(4)}`;
+    }
+
+    // Utils: vibration helper
+    function vibrate(pattern){
+      if(navigator.vibrate) navigator.vibrate(pattern);
+    }
+
+    // Format duration (seconds) to 4 decimals
+    function fmtSec(s){
+      return s.toFixed(4);
+    }
+
+    // State transitions
+    function setState(next){
+      appState = next;
+      renderState();
+    }
+
+    function renderState(){
+      if(appState === stateEnum.IDLE){
+        actionBtn.textContent = '시작';
+        actionBtn.classList.remove('bg-red-500');
+        actionBtn.classList.add('bg-[var(--primary)]');
+        timerDisplay.textContent = '?.????'; // blind mode default
+        statusMsg.textContent = '준비되면 시작을 눌러주세요';
+        resultArea.classList.add('hidden');
+      }else if(appState === stateEnum.RUNNING){
+        actionBtn.textContent = '정지';
+        actionBtn.classList.remove('bg-[var(--primary)]');
+        actionBtn.classList.add('bg-red-500');
+        // Blind mode: hide digits while running
+        timerDisplay.textContent = '?.????';
+        statusMsg.textContent = '집중하세요...';
+        resultArea.classList.add('hidden');
+      }else if(appState === stateEnum.RESULT){
+        actionBtn.textContent = '다시하기';
+        actionBtn.classList.remove('bg-red-500');
+        actionBtn.classList.add('bg-[var(--primary)]');
+        resultArea.classList.remove('hidden');
+      }
+    }
+
+    // Main loop: Update display frequently but we keep it hidden in blind mode
+    function loop(){
+      // Use performance.now for precision
+      const now = performance.now();
+      const duration = (now - startTime) / 1000; // seconds
+      // We intentionally DO NOT show live digits for blind mode; if we wanted to add a super-fast flicker
+      // effect we could update timerDisplay here at a high rate. Current design: keep it hidden.
+      // But we keep lastDuration for final calculation.
+      lastDuration = duration;
+      rafId = requestAnimationFrame(loop);
+    }
+
+    // Stop and evaluate
+    function stopAndEvaluate(){
+      if(rafId) cancelAnimationFrame(rafId);
+      const endTime = performance.now();
+      const duration = (endTime - startTime) / 1000; // seconds
+      lastDuration = duration;
+      // Round to 4 decimals for display and comparison
+      const rounded = Math.round(duration * 10000) / 10000;
+      const diff = Math.abs(rounded - targetSeconds);
+
+      // Update UI to show the precise value
+      timerDisplay.textContent = fmtSec(rounded) + 's';
+
+      // Determine outcome
+      const perfect = (Math.abs(rounded - targetSeconds) === 0);
+      const nearMiss = (diff <= 0.01 && !perfect);
+
+      // Haptic feedback and messages
+      vibrate(30);
+
+      if(perfect){
+        // Perfect: confetti and special vibration
+        vibrate([100,50,100]);
+        resultText.textContent = `완벽! ${fmtSec(rounded)}초`;
+        resultSub.textContent = '정확히 맞췄습니다!';
+        launchConfetti();
+      }else if(nearMiss){
+        resultText.textContent = `아슬아슬! ${fmtSec(rounded)}초`;
+        resultSub.textContent = `오차 ${diff.toFixed(4)}초`; 
+      }else{
+        resultText.textContent = `${fmtSec(rounded)}초`;
+        resultSub.textContent = `오차 ${diff.toFixed(4)}초 - 다시 도전!`;
+      }
+
+      // Save best record logic: choose record with smallest diff for same mode
+      const prev = loadBest();
+      const candidate = {duration: rounded, diff, mode: targetSeconds, iso: new Date().toISOString()};
+      if(!prev || candidate.mode !== prev.mode || candidate.diff < prev.diff){
+        // New personal best for this mode
+        saveBest(candidate);
+        // Notify with vibration pattern (distinct)
+        vibrate([50,30,50]);
+      }
+      updateBestUI();
+
+      // Placeholder for server save - add API call here in future
+      // TODO: POST /api/score {duration: rounded, diff, mode: targetSeconds}
+      // fetch('/api/score', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(candidate)})
+      //   .then(r => r.json()).then(console.log).catch(console.error);
+
+      // Analytics: Track game result
+      logEvent('game_result', {
+        mode: targetSeconds,
+        duration: rounded,
+        diff: diff,
+        is_perfect: perfect,
+        is_near_miss: nearMiss,
+        is_new_best: (!prev || candidate.mode !== prev.mode || candidate.diff < prev.diff)
+      });
+
+      setState(stateEnum.RESULT);
+    }
+
+    // Attach handlers
+    actionBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      // simple debounce to prevent accidental multiple taps
+      actionBtn.disabled = true;
+      setTimeout(()=> actionBtn.disabled=false, 300);
+      if(appState === stateEnum.IDLE){
+        // Start
+        startTime = performance.now();
+        setState(stateEnum.RUNNING);
+        // small click vibration
+        vibrate(20);
+        // Analytics: Track game start
+        logEvent('game_start', { mode: targetSeconds });
+        // Start RAF loop
+        rafId = requestAnimationFrame(loop);
+      }else if(appState === stateEnum.RUNNING){
+        // Stop
+        stopAndEvaluate();
+      }else if(appState === stateEnum.RESULT){
+        // Show interstitial ad before reset (Toss Ads SDK)
+        showTossInterstitialAd(() => {
+          // Reset to IDLE after ad closes
+          setState(stateEnum.IDLE);
+        });
+      }
+    });
+
+    // Share button - using Navigator.share API for real sharing
+    shareBtn.addEventListener('click', async ()=>{
+      vibrate(30);
+      
+      const rounded = lastDuration ? (Math.round(lastDuration*10000)/10000) : null;
+      const best = loadBest();
+      
+      // Analytics: Track share action
+      logEvent('share_attempt', { 
+        mode: targetSeconds, 
+        has_result: !!rounded,
+        duration: rounded 
+      });
+      
+      // Prepare share data
+      let shareTitle = 'Catch 1.0000s - 집중력 테스트';
+      let shareText = '';
+      
+      if(rounded && appState === stateEnum.RESULT){
+        // Share current result
+        const diff = Math.abs(rounded - targetSeconds);
+        shareText = `내 기록: ${rounded.toFixed(4)}초 (${targetSeconds}초 모드)\n`;
+        shareText += `오차: ${diff.toFixed(4)}초\n\n`;
+        if(best && best.mode === targetSeconds){
+          shareText += `최고 기록: ${best.duration.toFixed(4)}초\n`;
+        }
+        shareText += `당신도 도전해보세요! 정확히 ${targetSeconds}초에 멈출 수 있나요?`;
+      }else{
+        // Share invitation
+        shareText = `Catch ${targetSeconds.toFixed(4)}s 게임\n정확히 ${targetSeconds}초에 타이머를 멈춰보세요!\n집중력과 타이밍 감각을 테스트해보세요`;
+      }
+      
+      // Try Web Share API (works on mobile and some desktop browsers)
+      if(navigator.share){
+        try{
+          await navigator.share({
+            title: shareTitle,
+            text: shareText,
+            // url: window.location.href // Uncomment when deployed to add game URL
+          });
+          // Success - user completed share
+          console.log('Share completed successfully');
+          logEvent('share_success', { method: 'native', mode: targetSeconds });
+        }catch(err){
+          // User cancelled or error occurred
+          if(err.name !== 'AbortError'){
+            console.error('Share failed:', err);
+            logEvent('share_failed', { error: err.message });
+            // Fallback to clipboard
+            fallbackToClipboard(shareText);
+          }
+          // If AbortError (user cancelled), do nothing
+        }
+      }else{
+        // Fallback for browsers that don't support Web Share API
+        fallbackToClipboard(shareText);
+      }
+    });
+    
+    // Fallback: Copy to clipboard
+    function fallbackToClipboard(text){
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(()=>{
+          alert('공유 문구가 복사되었습니다!\n\n카카오톡이나 문자로 공유해보세요.');
+          logEvent('share_success', { method: 'clipboard' });
+        }).catch(()=>{
+          // Last resort: show text in alert for manual copy
+          alert('공유 문구:\n\n' + text + '\n\n위 텍스트를 복사해서 공유해주세요!');
+        });
+      }else{
+        // Very old browser - just show the text
+        alert('공유 문구:\n\n' + text + '\n\n위 텍스트를 복사해서 공유해주세요!');
+      }
+    }
+
+    // Mode buttons
+    modeButtons.forEach(btn => {
+      btn.addEventListener('click', ()=>{
+        const m = Number(btn.dataset.mode);
+        targetSeconds = m;
+        
+        // Update mode description text
+        modeDescription.textContent = `정확히 ${m}초에 멈춰보세요`;
+        
+        modeButtons.forEach(b=> {
+          b.classList.remove('text-[var(--primary)]','bg-white','dark:bg-[#1E2530]');
+          b.classList.add('text-[var(--muted)]');
+        });
+        btn.classList.remove('text-[var(--muted)]');
+        btn.classList.add('text-[var(--primary)]','bg-white','dark:bg-[#1E2530]');
+        // reset state and UI
+        setState(stateEnum.IDLE);
+        updateBestUI();
+      });
+    });
+
+    // Confetti implementation (lightweight) - triggered on perfect
+    function launchConfetti(){
+      const canvas = confettiCanvas;
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#3182F6','#FFD166','#06D6A0','#EF476F','#FFC107'];
+
+      // Resize handling
+      window.addEventListener('resize', ()=>{
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      // create particles
+      for(let i=0;i<80;i++){
+        particles.push({
+          x: Math.random()*width,
+          y: -20 - Math.random()*height*0.2,
+          vx: (Math.random()-0.5)*6,
+          vy: Math.random()*6 + 2,
+          size: Math.random()*8 + 4,
+          color: colors[Math.floor(Math.random()*colors.length)],
+          rot: Math.random()*360,
+          rotSpeed: (Math.random()-0.5)*10
+        });
+      }
+
+      let t0 = performance.now();
+      function frame(){
+        const t = performance.now();
+        const dt = (t - t0)/1000; t0 = t;
+        ctx.clearRect(0,0,width,height);
+        for(let p of particles){
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.15; // gravity
+          p.rot += p.rotSpeed;
+          // draw
+          ctx.save();
+          ctx.translate(p.x,p.y);
+          ctx.rotate(p.rot*Math.PI/180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+          ctx.restore();
+        }
+        // remove offscreen
+        for(let i=particles.length-1;i>=0;i--){
+          if(particles[i].y > height + 40) particles.splice(i,1);
+        }
+        if(particles.length>0) requestAnimationFrame(frame);
+        else ctx.clearRect(0,0,width,height);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // Initialize
+    (function init(){
+      updateBestUI();
+      setState(stateEnum.IDLE);
+      
+      // Analytics: Track app launch
+      logEvent('app_launch', { timestamp: new Date().toISOString() });
+      
+      // Simulate ad banner impression (for analytics)
+      logEvent('ad_impression', { ad_type: 'banner', ad_network: 'toss' });
+      
+      // Accessibility: allow tapping anywhere on the timer to stop when running
+      timerDisplay.addEventListener('click', ()=>{ if(appState===stateEnum.RUNNING) stopAndEvaluate(); });
+      // Prevent pull-to-refresh or overscroll gestures in some WebViews
+      document.addEventListener('touchmove', (e)=>{ if(appState===stateEnum.RUNNING) e.preventDefault(); }, {passive:false});
+    })();
+
+    // Expose for debugging (remove in production)
+    window.__catch10000 = { setState, stopAndEvaluate, startTime, loadBest };
+
+  </script>
+</body>
+</html>
