@@ -18,7 +18,7 @@
 
   <style>
     :root {
-      --primary-yellow: #FFD700;
+      --primary-blue: #3182F6;
       --primary-black: #1a1a1a;
       --primary-white: #FFFFFF;
       --bg-light: #F5F5F5;
@@ -82,31 +82,31 @@
 
     /* Button Styles - 3D Effect */
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary-yellow) 0%, #FFC700 100%);
+      background: linear-gradient(135deg, var(--primary-blue) 0%, #2563EB 100%);
       border: none;
       border-radius: 16px;
       font-weight: 700;
-      color: var(--primary-black);
+      color: var(--primary-white);
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(49, 130, 246, 0.3), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
       position: relative;
       overflow: hidden;
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 6px 16px rgba(49, 130, 246, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .btn-primary:active {
       transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(255, 215, 0, 0.2), inset 0 -1px 2px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 4px rgba(49, 130, 246, 0.2), inset 0 -1px 2px rgba(0, 0, 0, 0.15);
     }
 
     .btn-secondary {
       background: var(--primary-white);
-      border: 2px solid var(--primary-yellow);
+      border: 2px solid var(--primary-blue);
       border-radius: 16px;
       font-weight: 700;
       color: var(--primary-black);
@@ -115,7 +115,7 @@
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 215, 0, 0.1);
+      background: rgba(49, 130, 246, 0.1);
       transform: translateY(-2px);
     }
 
@@ -126,7 +126,7 @@
     /* Segmented Control */
     .segmented-control {
       display: inline-flex;
-      background: rgba(255, 215, 0, 0.1);
+      background: rgba(49, 130, 246, 0.1);
       border-radius: 12px;
       padding: 4px;
       gap: 0;
@@ -147,9 +147,9 @@
     }
 
     .segmented-control button.active {
-      background: var(--primary-yellow);
-      color: var(--primary-black);
-      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+      background: var(--primary-blue);
+      color: var(--primary-white);
+      box-shadow: 0 2px 8px rgba(49, 130, 246, 0.3);
     }
 
     /* Character Area */
@@ -160,10 +160,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 80px;
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+      background: linear-gradient(135deg, rgba(49, 130, 246, 0.1) 0%, rgba(49, 130, 246, 0.05) 100%);
       border-radius: 20px;
-      border: 2px solid rgba(255, 215, 0, 0.3);
+      border: 2px solid rgba(49, 130, 246, 0.3);
       animation: character-float 3s ease-in-out infinite;
     }
 
@@ -224,103 +223,143 @@
       }
 
       .segmented-control {
-        background: rgba(255, 215, 0, 0.15);
+        background: rgba(49, 130, 246, 0.15);
       }
 
       .character-area {
-        background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%);
+        background: linear-gradient(135deg, rgba(49, 130, 246, 0.15) 0%, rgba(49, 130, 246, 0.08) 100%);
       }
     }
   </style>
 </head>
 <body>
-  <div id="app" class="flex flex-col items-center justify-center p-4 sm:p-6">
+  <div id="app" class="flex flex-col items-center justify-center min-h-screen w-full p-2 sm:p-4 overflow-hidden">
     <!-- Canvas for confetti -->
     <canvas id="confettiCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
 
-    <div class="w-full max-w-md mx-auto">
+    <div class="w-full max-w-sm mx-auto flex flex-col h-screen overflow-y-auto">
       <!-- Header Section -->
-      <div class="text-center mb-6 animate-fade-in">
-        <h1 class="font-title text-4xl sm:text-5xl mb-2" style="color: var(--primary-black);">
+      <div class="text-center py-3 sm:py-4 flex-shrink-0">
+        <h1 class="font-title text-3xl sm:text-4xl mb-1" style="color: var(--primary-black); line-height: 1.1;">
           오늘의 호구
         </h1>
-        <p class="font-subtitle text-xl sm:text-2xl" style="color: var(--primary-yellow);">
+        <p class="font-subtitle text-lg sm:text-xl" style="color: var(--primary-blue); line-height: 1;">
           1초 내기
         </p>
-        <p class="text-xs sm:text-sm text-gray-500 mt-2" id="modeDesc">정확히 1초를 맞춰보세요</p>
+        <p class="text-xs sm:text-sm text-gray-500 mt-1">정확히 1초를 맞춰보세요</p>
       </div>
 
       <!-- Main Card -->
-      <div class="card-elevated p-6 sm:p-8 mb-6">
-        <!-- Best Record -->
-        <div class="text-center mb-6 pb-4 border-b border-gray-200">
+      <div class="card-elevated p-4 sm:p-6 mb-4 flex-shrink-0">
+        <!-- Best Record - Compact -->
+        <div class="text-center mb-4 pb-3 border-b border-gray-200" style="min-height: auto;">
           <p class="text-xs text-gray-500 mb-1">최고 기록</p>
-          <p id="bestRecordDisplay" class="text-2xl font-bold" style="color: var(--primary-yellow);">
+          <p id="bestRecordDisplay" class="text-xl font-bold" style="color: var(--primary-blue); line-height: 1;">
             없음
           </p>
-          <p id="bestDiffDisplay" class="text-xs text-gray-400 mt-1"></p>
+          <p id="bestDiffDisplay" class="text-xs text-gray-400 mt-0.5"></p>
         </div>
 
-        <!-- Mode Selector -->
-        <div class="mb-8">
-          <p class="text-xs text-gray-500 mb-3 ml-1">모드 선택</p>
+        <!-- Mode Selector - Compact -->
+        <div class="mb-4">
+          <p class="text-xs text-gray-500 mb-2 ml-1">모드</p>
           <div class="segmented-control">
-            <button class="mode-btn active" data-mode="1">1.0초</button>
-            <button class="mode-btn" data-mode="3">3.0초</button>
-            <button class="mode-btn" data-mode="5">5.0초</button>
+            <button class="mode-btn active text-xs sm:text-sm" data-mode="1">1.0초</button>
+            <button class="mode-btn text-xs sm:text-sm" data-mode="3">3.0초</button>
+            <button class="mode-btn text-xs sm:text-sm" data-mode="5">5.0초</button>
           </div>
         </div>
 
-        <!-- Character Area -->
-        <div class="character-area mb-8" id="characterArea">
-          🐶
+        <!-- Character Area - Optimized size -->
+        <div class="character-area mb-4" style="width: 100px; height: 100px; margin: 0 auto;" id="characterArea">
+          <svg width="90" height="90" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Dog body -->
+            <ellipse cx="50" cy="60" rx="28" ry="32" fill="#D4A574" stroke="#8B6F47" stroke-width="1.5"/>
+            
+            <!-- Dog head -->
+            <circle cx="50" cy="35" r="22" fill="#D4A574" stroke="#8B6F47" stroke-width="1.5"/>
+            
+            <!-- Left ear -->
+            <ellipse cx="35" cy="18" rx="8" ry="12" fill="#D4A574" stroke="#8B6F47" stroke-width="1.5" transform="rotate(-25 35 18)"/>
+            
+            <!-- Right ear -->
+            <ellipse cx="65" cy="18" rx="8" ry="12" fill="#D4A574" stroke="#8B6F47" stroke-width="1.5" transform="rotate(25 65 18)"/>
+            
+            <!-- Snout -->
+            <ellipse cx="50" cy="42" rx="12" ry="10" fill="#E8C9A0" stroke="#8B6F47" stroke-width="1.5"/>
+            
+            <!-- Left eye -->
+            <circle cx="44" cy="32" r="2.5" fill="#000000"/>
+            
+            <!-- Right eye -->
+            <circle cx="56" cy="32" r="2.5" fill="#000000"/>
+            
+            <!-- Eyes shine -->
+            <circle cx="44.5" cy="31" r="1" fill="#FFFFFF"/>
+            <circle cx="56.5" cy="31" r="1" fill="#FFFFFF"/>
+            
+            <!-- Nose -->
+            <ellipse cx="50" cy="42" rx="3" ry="2.5" fill="#8B6F47"/>
+            
+            <!-- Mouth -->
+            <path d="M 50 42 Q 47 46 44 44" stroke="#8B6F47" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M 50 42 Q 53 46 56 44" stroke="#8B6F47" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            
+            <!-- Left paw -->
+            <ellipse cx="38" cy="88" rx="6" ry="8" fill="#D4A574" stroke="#8B6F47" stroke-width="1"/>
+            
+            <!-- Right paw -->
+            <ellipse cx="62" cy="88" rx="6" ry="8" fill="#D4A574" stroke="#8B6F47" stroke-width="1"/>
+            
+            <!-- Tail wave -->
+            <path d="M 25 65 Q 15 55 18 40" stroke="#D4A574" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
 
-        <!-- Character Message -->
-        <div class="text-center mb-6">
-          <p id="characterMessage" class="font-subtitle text-lg sm:text-xl px-4" style="color: var(--primary-black); min-height: 32px;">
-            너 호구냐? 1초도 못 맞춰?
+        <!-- Character Message - Compact -->
+        <div class="text-center mb-3">
+          <p id="characterMessage" class="font-subtitle text-sm sm:text-base px-2" style="color: var(--primary-black); min-height: 28px; line-height: 1.3;">
+            흠... 1초면 쉽지 않나?
           </p>
         </div>
 
-        <!-- Timer Display -->
-        <div class="mb-8 py-6">
-          <div class="timer-display font-mono" id="timerDisplay">
+        <!-- Timer Display - Optimized -->
+        <div class="mb-4 py-3">
+          <div class="timer-display font-mono text-3xl sm:text-5xl" id="timerDisplay">
             ?.????
           </div>
-          <p id="statusMsg" class="text-center text-sm text-gray-500 mt-3">
+          <p id="statusMsg" class="text-center text-xs sm:text-sm text-gray-500 mt-2">
             시작 버튼을 눌러주세요
           </p>
         </div>
 
-        <!-- Result Section (hidden by default) -->
-        <div id="resultSection" class="hidden mb-8 p-4 rounded-lg" style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3);">
-          <p id="resultText" class="text-center font-bold text-lg mb-2"></p>
+        <!-- Result Section -->
+        <div id="resultSection" class="hidden mb-3 p-3 rounded-lg" style="background: rgba(49, 130, 246, 0.1); border: 1px solid rgba(49, 130, 246, 0.3);">
+          <p id="resultText" class="text-center font-bold text-sm sm:text-base mb-1"></p>
           <p id="resultSubtext" class="text-center text-xs text-gray-600"></p>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row gap-3 mb-6">
-          <button id="actionBtn" class="btn-primary flex-1 px-6 py-4 text-lg font-bold rounded-lg" style="min-height: 56px;">
+        <!-- Action Buttons - Compact -->
+        <div class="flex gap-2 mb-3">
+          <button id="actionBtn" class="btn-primary flex-1 px-4 py-3 text-base font-bold rounded-lg" style="min-height: auto; line-height: 1;">
             시작
           </button>
-          <button id="shareBtn" class="btn-secondary flex-1 px-6 py-4 text-lg font-bold rounded-lg" style="min-height: 56px;">
-            공유하기
+          <button id="shareBtn" class="btn-secondary flex-1 px-4 py-3 text-base font-bold rounded-lg" style="min-height: auto; line-height: 1;">
+            공유
           </button>
         </div>
 
-        <!-- Analytics Placeholder -->
-        <div id="toss-ad-banner" class="h-16 flex items-center justify-center border border-dashed border-gray-300 rounded-lg text-xs text-gray-400 bg-gray-50" style="opacity: 0.7;">
-          Toss Ads 영역
+        <!-- Ads Placeholder - Minimal -->
+        <div id="toss-ad-banner" class="h-12 flex items-center justify-center border border-dashed border-gray-300 rounded-lg text-xs text-gray-400 bg-gray-50" style="opacity: 0.7;">
+          Toss Ads
         </div>
       </div>
 
-      <!-- Footer -->
-      <footer class="text-center text-xs text-gray-400 mt-6 px-4 leading-relaxed">
-        <p>(주)옐로우독 소프트 | 대표: 조준모</p>
-        <p class="mt-1">사업자등록번호: 발급진행중</p>
-        <p class="mt-2">문의: help@yellowdog.soft</p>
-        <p class="mt-3 text-gray-500">Copyright © 2026 Yellow Dog Soft. All rights reserved.</p>
+      <!-- Footer - Minimal -->
+      <footer class="text-center text-xs text-gray-400 mt-3 mb-2 px-2 leading-tight flex-shrink-0">
+        <p>(주)옐로우독 소프트 | 조준모</p>
+        <p class="mt-0.5">help@yellowdog.soft</p>
+        <p class="mt-0.5 text-gray-500">© 2026 Yellow Dog Soft</p>
       </footer>
     </div>
   </div>
@@ -410,14 +449,14 @@
         timerDisplay.textContent = '?.????';
         statusMsg.textContent = '시작 버튼을 눌러주세요';
         resultSection.classList.add('hidden');
-        characterMessage.textContent = '너 호구냐? 1초도 못 맞춰?';
+        characterMessage.textContent = '흠... 1초면 쉽지 않나?';
       } else if (appState === stateEnum.RUNNING) {
         actionBtn.textContent = '정지';
         actionBtn.classList.add('btn-secondary');
         actionBtn.classList.remove('btn-primary');
         timerDisplay.textContent = '?.????';
         statusMsg.textContent = '정확하게 멈춰보세요!';
-        characterMessage.textContent = '아, 떨리네...';
+        characterMessage.textContent = '오... 그래, 한 번 해봐.';
       } else if (appState === stateEnum.RESULT) {
         actionBtn.textContent = '다시하기';
         actionBtn.classList.add('btn-primary');
@@ -461,20 +500,20 @@
 
       if (perfect) {
         vibrate([100, 50, 100]);
-        resultText.textContent = `와! 이걸 맞추네? 탈출!`;
-        resultSubtext.textContent = '완벽한 타이밍입니다!';
-        characterMessage.textContent = '어? 진짜 맞췄어?!';
+        resultText.textContent = `오호! 이것도 맞춘다고?`;
+        resultSubtext.textContent = '실력이 있네요... 믿기지 않아.';
+        characterMessage.textContent = '어... 진짜네?';
         launchConfetti();
         playSuccessAnimation();
       } else if (nearMiss) {
-        resultText.textContent = `거의 다 왔는데... ${fmtSec(rounded)}초`;
-        resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 다음엔 성공할 거야!`;
-        characterMessage.textContent = '아, 아까워...';
+        resultText.textContent = `아까워. ${fmtSec(rounded)}초`;
+        resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 거의 다 왔어요.`;
+        characterMessage.textContent = '아이고... 아까워.';
         playNearMissAnimation();
       } else {
-        resultText.textContent = `응~ 넌 평생 호구야~ (${fmtSec(rounded)}초)`;
-        resultSubtext.textContent = `오차 ${diff.toFixed(4)}초`;
-        characterMessage.textContent = '응~ 넌 평생 호구야~';
+        resultText.textContent = `에라 모르겠다. ${fmtSec(rounded)}초`;
+        resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 역시 하나네.`;
+        characterMessage.textContent = '역시... 하나야.';
         playFailAnimation();
       }
 
@@ -513,18 +552,20 @@
       setTimeout(() => {
         characterArea.style.animation = 'character-float 3s ease-in-out infinite';
       }, 10);
-      characterArea.textContent = '🎉';
+      // Update SVG color or add celebration
     }
 
     function playFailAnimation() {
       const card = document.querySelector('.card-elevated');
       card.classList.add('shake');
       setTimeout(() => card.classList.remove('shake'), 400);
-      characterArea.textContent = '😭';
     }
 
     function playNearMissAnimation() {
-      characterArea.textContent = '😅';
+      // Slight shake
+      const card = document.querySelector('.card-elevated');
+      card.style.animation = 'shake 0.2s ease-in-out';
+      setTimeout(() => { card.style.animation = 'none'; }, 200);
     }
 
     function launchConfetti() {
@@ -534,7 +575,7 @@
       canvas.height = window.innerHeight;
 
       const particles = [];
-      const colors = ['#FFD700', '#FFC700', '#1a1a1a', '#FFFFFF'];
+      const colors = ['#3182F6', '#2563EB', '#1a1a1a', '#FFFFFF'];
 
       for (let i = 0; i < 100; i++) {
         particles.push({
@@ -571,6 +612,13 @@
       }
 
       requestAnimationFrame(animate);
+    }
+
+    // ============================================================
+    // CONFETTI COLORS
+    // ============================================================
+    function getConfettiColors() {
+      return ['#3182F6', '#2563EB', '#1a1a1a', '#FFFFFF'];
     }
 
     // ============================================================
@@ -644,9 +692,6 @@
         const m = Number(btn.dataset.mode);
         targetSeconds = m;
         currentMode = m;
-        
-        // Update mode description
-        modeDesc.textContent = `정확히 ${m}초를 맞춰보세요`;
 
         modeButtons.forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
