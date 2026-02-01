@@ -357,7 +357,7 @@
 
       <!-- Footer - Minimal -->
       <footer class="text-center text-xs text-gray-400 mt-3 mb-2 px-2 leading-tight flex-shrink-0">
-        <p>(주)옐로우독 소프트 | 조준모</p>
+        <p>(주)옐로우독 소프트 | 대왕누렁이</p>
         <p class="mt-0.5">help@yellowdog.soft</p>
         <p class="mt-0.5 text-gray-500">© 2026 Yellow Dog Soft</p>
       </footer>
@@ -452,11 +452,11 @@
         
         // Mode-specific idle messages
         if (targetSeconds === 1) {
-          characterMessage.textContent = '흠... 1초면 쉽지 않나?';
+          characterMessage.textContent = '흠... 1초면 쉽지 않나요?';
         } else if (targetSeconds === 3) {
-          characterMessage.textContent = '3초? 할 만한데?';
+          characterMessage.textContent = '3초? 할 만한데요?';
         } else if (targetSeconds === 5) {
-          characterMessage.textContent = '5초라니, 너무 길지 않나?';
+          characterMessage.textContent = '5초라니, 너무 길지 않나요?';
         }
       } else if (appState === stateEnum.RUNNING) {
         actionBtn.textContent = '정지';
@@ -464,7 +464,7 @@
         actionBtn.classList.remove('btn-primary');
         timerDisplay.textContent = '?.????';
         statusMsg.textContent = '정확하게 멈춰보세요!';
-        characterMessage.textContent = '오... 그래, 한 번 해봐.';
+        characterMessage.textContent = '오... 그래, 한 번 해봐요.';
       } else if (appState === stateEnum.RESULT) {
         actionBtn.textContent = '다시하기';
         actionBtn.classList.add('btn-primary');
@@ -511,49 +511,49 @@
         
         // Mode-specific success messages
         if (targetSeconds === 1) {
-          resultText.textContent = `오호! 이것도 맞춘다고?`;
-          resultSubtext.textContent = '실력이 있네요... 믿기지 않아.';
-          characterMessage.textContent = '어... 진짜네?';
+          resultText.textContent = `오호! 이것도 맞추셨어요?`;
+          resultSubtext.textContent = '실력이 있으신가봐요... 믿기지 않네요.';
+          characterMessage.textContent = '어... 정말이네요?';
         } else if (targetSeconds === 3) {
-          resultText.textContent = `오호! 정말 할 만 하네?`;
-          resultSubtext.textContent = '3초를 정확히 맞추네요. 신기한데요?';
-          characterMessage.textContent = '어? 정말이네.';
+          resultText.textContent = `오호! 정말 할 만 하네요?`;
+          resultSubtext.textContent = '3초를 정확히 맞추시네요. 신기한데요?';
+          characterMessage.textContent = '어? 정말이네요.';
         } else if (targetSeconds === 5) {
-          resultText.textContent = `오호! 5초를 정확히?`;
-          resultSubtext.textContent = '5초도 맞추네요. 솜씨가 있으신가봐요.';
-          characterMessage.textContent = '오... 5초를?';
+          resultText.textContent = `오호! 5초를 정확히요?`;
+          resultSubtext.textContent = '5초도 맞추시네요. 솜씨가 있으신가봐요.';
+          characterMessage.textContent = '오... 5초를요?';
         }
         
         launchConfetti();
         playSuccessAnimation();
       } else if (nearMiss) {
         if (targetSeconds === 1) {
-          resultText.textContent = `아까워. ${fmtSec(rounded)}초`;
+          resultText.textContent = `아까워요. ${fmtSec(rounded)}초`;
           resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 거의 다 왔어요.`;
-          characterMessage.textContent = '아이고... 아까워.';
+          characterMessage.textContent = '아이고... 아까워요.';
         } else if (targetSeconds === 3) {
           resultText.textContent = `어라? ${fmtSec(rounded)}초네요.`;
-          resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 거의 맞춘 거 같은데?`;
-          characterMessage.textContent = '아, 아까워.';
+          resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 거의 맞추신 것 같은데요?`;
+          characterMessage.textContent = '아, 아까워요.';
         } else if (targetSeconds === 5) {
-          resultText.textContent = `어? ${fmtSec(rounded)}초네.`;
-          resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 거의 맞췄어요.`;
-          characterMessage.textContent = '거의였는데...';
+          resultText.textContent = `어? ${fmtSec(rounded)}초네요.`;
+          resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 거의 맞추셨어요.`;
+          characterMessage.textContent = '거의였는데요...';
         }
         playNearMissAnimation();
       } else {
         if (targetSeconds === 1) {
-          resultText.textContent = `에라 모르겠다. ${fmtSec(rounded)}초`;
-          resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 역시 하나네.`;
-          characterMessage.textContent = '역시... 하나야.';
+          resultText.textContent = `에라 모르겠어요. ${fmtSec(rounded)}초`;
+          resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 역시 어렵네요.`;
+          characterMessage.textContent = '역시... 어렵네요.';
         } else if (targetSeconds === 3) {
           resultText.textContent = `아뇨. ${fmtSec(rounded)}초네요.`;
           resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 3초는 어렵나봐요.`;
-          characterMessage.textContent = '3초는... 힘들지?';
+          characterMessage.textContent = '3초는... 힘들지요?';
         } else if (targetSeconds === 5) {
           resultText.textContent = `5초는 아니네요. ${fmtSec(rounded)}초.`;
           resultSubtext.textContent = `오차 ${diff.toFixed(4)}초 - 5초가 힘들군요.`;
-          characterMessage.textContent = '5초는 어려운가봐.';
+          characterMessage.textContent = '5초는 어려운가봐요.';
         }
         playFailAnimation();
       }
