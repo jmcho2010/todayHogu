@@ -17,6 +17,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
+    /* Force light color scheme on initial load */
+    @media (prefers-color-scheme: dark) {
+      html {
+        color-scheme: light;
+      }
+    }
     :root {
       --primary-blue: #3182F6;
       --primary-black: #1a1a1a;
@@ -359,10 +365,10 @@
           </button>
         </div>
 
-        <!-- Ads Placeholder - Minimal -->
-        <div id="toss-ad-banner" class="h-12 flex items-center justify-center border border-dashed border-gray-300 rounded-lg text-xs text-gray-400 bg-gray-50" style="opacity: 0.7;">
+        <!-- Ads Placeholder - 추후 Toss 인앱 통합 후 구현 예정 -->
+        <!-- <div id="toss-ad-banner" class="h-12 flex items-center justify-center border border-dashed border-gray-300 rounded-lg text-xs text-gray-400 bg-gray-50" style="opacity: 0.7;">
           Toss Ads
-        </div>
+        </div> -->
       </div>
 
       <!-- Footer - Minimal -->
@@ -760,7 +766,7 @@
       updateBestUI();
       setState(stateEnum.IDLE);
       logEvent('app_launch', { timestamp: new Date().toISOString() });
-      logEvent('ad_impression', { type: 'banner' });
+      // logEvent('ad_impression', { type: 'banner' }); // 추후 광고 통합 후 활성화
 
       document.addEventListener(
         'touchmove',
