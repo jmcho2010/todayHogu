@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <title>개인정보처리방침 - 오늘의 누렁이</title>
+
+  <!-- Google Fonts: Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700;800;900&family=Jua&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Force light color scheme on initial load */
+    @media (prefers-color-scheme: dark) {
+      html {
+        color-scheme: light;
+      }
+    }
+
+    :root {
+      --primary-blue: #3182F6;
+      --primary-black: #1a1a1a;
+      --primary-white: #FFFFFF;
+      --bg-light: #F5F5F5;
+      --text-dark: #191F28;
+      --text-muted: #6B7684;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #F5F5F5 0%, #EFEFEF 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      color: var(--text-dark);
+      overflow-y: auto;
+    }
+
+    .font-title {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    /* Card Elevation */
+    .card-elevated {
+      background: var(--primary-white);
+      border-radius: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+      }
+
+      .card-elevated {
+        background: #1f1f1f;
+        color: #ffffff;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      p, span, li {
+        color: #e0e0e0;
+      }
+
+      h1, h2, h3 {
+        color: #ffffff;
+      }
+
+      .text-gray-500 {
+        color: #999 !important;
+      }
+
+      .text-gray-600 {
+        color: #aaa !important;
+      }
+    }
+
+    /* Manual Dark Mode Class */
+    body.dark-mode {
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .card-elevated {
+      background: #1f1f1f !important;
+      color: #ffffff !important;
+    }
+
+    body.dark-mode p, body.dark-mode span, body.dark-mode li {
+      color: #e0e0e0 !important;
+    }
+
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 {
+      color: #ffffff !important;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--primary-blue);
+      color: white;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(49, 130, 246, 0.3);
+    }
+
+    body.dark-mode .back-button {
+      background: var(--primary-blue);
+    }
+
+    /* Theme Toggle */
+    #themeToggle {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 50;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary-blue);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(49, 130, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    #themeToggle:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Theme Toggle Button -->
+  <button id="themeToggle" aria-label="다크모드 토글">🌙</button>
+
+  <div class="w-full min-h-screen py-8 px-4">
+    <div class="w-full max-w-2xl mx-auto">
+      <!-- Header -->
+      <div class="mb-12">
+        <h1 class="font-title text-4xl sm:text-5xl mb-4" style="color: var(--primary-black); line-height: 1.2;">
+          개인정보처리방침
+        </h1>
+        <p class="text-sm text-gray-500">최종 수정일: 2026년 3월 21일</p>
+      </div>
+
+      <!-- Main Content Card -->
+      <div class="card-elevated p-6 sm:p-8 mb-8 space-y-8">
+        
+        <!-- Section 1: 회사 정보 -->
+        <section>
+          <h2 class="font-title text-2xl mb-4" style="color: var(--primary-black);">회사 정보</h2>
+          <div class="space-y-2 text-sm sm:text-base leading-relaxed">
+            <p><strong>회사명:</strong> 옐로우독 소프트 (Yellow Dog Soft)</p>
+            <p><strong>서비스명:</strong> 오늘의 누렁이 : 1초 내기</p>
+            <p><strong>담당자:</strong> 대왕누렁이</p>
+            <p><strong>이메일:</strong> <a href="mailto:help@yellowdog.soft" style="color: var(--primary-blue); text-decoration: underline;">help@yellowdog.soft</a></p>
+          </div>
+        </section>
+
+        <!-- Divider -->
+        <hr class="border-gray-300" style="opacity: 0.3;" />
+
+        <!-- Section 2: 개인정보 수집 및 이용 -->
+        <section>
+          <h2 class="font-title text-2xl mb-4" style="color: var(--primary-black);">1. 개인정보 수집 및 이용</h2>
+          
+          <h3 class="font-title text-lg mb-3 mt-4" style="color: var(--primary-blue);">수집하는 개인정보</h3>
+          <p class="text-sm sm:text-base leading-relaxed text-gray-600 mb-4">
+            본 서비스(오늘의 누렁이)는 <strong>직접적인 개인정보를 수집하지 않습니다.</strong> 
+            사용자가 직접 입력하거나 제공하는 정보가 없으며, 회원가입 또는 로그인 절차가 없습니다.
+          </p>
+
+          <h3 class="font-title text-lg mb-3 mt-4" style="color: var(--primary-blue);">게임 데이터 저장</h3>
+          <p class="text-sm sm:text-base leading-relaxed text-gray-600 mb-4">
+            게임의 최고 기록(최고 달성 시간, 오차, 플레이 모드 등)은 사용자의 브라우저 
+            <strong>로컬 스토리지(Local Storage)</strong>에만 저장되며, 당사 서버로 전송되지 않습니다. 
+            브라우저 캐시를 삭제하거나 브라우저 설정에서 로컬 스토리지를 삭제하면 
+            저장된 기록은 즉시 삭제됩니다.
+          </p>
+        </section>
+
+        <!-- Divider -->
+        <hr class="border-gray-300" style="opacity: 0.3;" />
+
+        <!-- Section 3: 제3자 쿠키 및 광고 -->
+        <section>
+          <h2 class="font-title text-2xl mb-4" style="color: var(--primary-black);">2. 제3자 쿠키 및 광고</h2>
+          
+          <h3 class="font-title text-lg mb-3 mt-4" style="color: var(--primary-blue);">Google AdSense</h3>
+          <p class="text-sm sm:text-base leading-relaxed text-gray-600 mb-4">
+            본 서비스는 광고 수익을 위해 Google AdSense를 사용합니다. 
+            Google AdSense는 <strong>쿠키를 사용하여 사용자의 방문 기록을 수집</strong>하고, 
+            이를 바탕으로 맞춤형 광고를 게재합니다.
+          </p>
+
+          <h3 class="font-title text-lg mb-3 mt-4" style="color: var(--primary-blue);">DART 쿠키</h3>
+          <p class="text-sm sm:text-base leading-relaxed text-gray-600 mb-4">
+            Google은 DART 쿠키를 사용하여 본 서비스 및 인터넷의 다른 웹사이트를 방문한 사용자에게 
+            광고를 게재합니다. 사용자는 Google 광고 및 콘텐츠 네트워크 개인정보처리방침에서 
+            DART 쿠키 사용을 거부할 수 있습니다. 
+            <a href="https://policies.google.com/technologies/ads" style="color: var(--primary-blue); text-decoration: underline;">Google 광고 정책</a>을 
+            참고하시기 바랍니다.
+          </p>
+
+          <h3 class="font-title text-lg mb-3 mt-4" style="color: var(--primary-blue);">쿠키 거부</h3>
+          <p class="text-sm sm:text-base leading-relaxed text-gray-600">
+            사용자는 브라우저 설정을 통해 모든 쿠키를 거부하거나, 쿠키가 설정될 때 
+            사용자에게 알리도록 설정할 수 있습니다. 다만, 쿠키를 거부할 경우 
+            일부 서비스의 기능이 제대로 작동하지 않을 수 있습니다.
+          </p>
+        </section>
+
+        <!-- Divider -->
+        <hr class="border-gray-300" style="opacity: 0.3;" />
+
+        <!-- Section 4: 개인정보의 보유 및 이용기간 -->
+        <section>
+          <h2 class="font-title text-2xl mb-4" style="color: var(--primary-black);">3. 개인정보의 보유 및 이용기간</h2>
+          
+          <div class="bg-blue-50 p-4 rounded-lg mb-4" style="background: rgba(49, 130, 246, 0.1);">
+            <p class="text-sm sm:text-base leading-relaxed">
+              <strong>로컬 스토리지 데이터:</strong> 서비스 이용 종료 시까지 또는 
+              사용자가 브라우저 설정에서 로컬 스토리지를 삭제할 때까지 보유합니다.
+            </p>
+          </div>
+
+          <div class="bg-blue-50 p-4 rounded-lg" style="background: rgba(49, 130, 246, 0.1);">
+            <p class="text-sm sm:text-base leading-relaxed">
+              <strong>쿠키:</strong> Google AdSense 및 기타 광고 제공자의 쿠키 정책에 따라 
+              관리됩니다. 일반적으로 웹사이트 방문 후 13개월 이내에 만료됩니다.
+            </p>
+          </div>
+        </section>
+
+        <!-- Divider -->
+        <hr class="border-gray-300" style="opacity: 0.3;" />
+
+        <!-- Section 5: 사용자의 권리 -->
+        <section>
+          <h2 class="font-title text-2xl mb-4" style="color: var(--primary-black);">4. 사용자의 권리</h2>
+          
+          <ul class="space-y-3 text-sm sm:text-base leading-relaxed">
+            <li class="flex gap-3">
+              <span style="color: var(--primary-blue); font-weight: bold; flex-shrink: 0;">▸</span>
+              <span>로컬 스토리지에 저장된 게임 데이터는 언제든 브라우저 설정에서 삭제할 수 있습니다.</span>
+            </li>
+            <li class="flex gap-3">
+              <span style="color: var(--primary-blue); font-weight: bold; flex-shrink: 0;">▸</span>
+              <span>쿠키 설정을 통해 제3자 쿠키를 거부하거나 제한할 수 있습니다.</span>
+            </li>
+            <li class="flex gap-3">
+              <span style="color: var(--primary-blue); font-weight: bold; flex-shrink: 0;">▸</span>
+              <span>개인정보 관련 문의사항은 help@yellowdog.soft로 연락 주시기 바랍니다.</span>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Divider -->
+        <hr class="border-gray-300" style="opacity: 0.3;" />
+
+        <!-- Section 6: 정책 변경 -->
+        <section>
+          <h2 class="font-title text-2xl mb-4" style="color: var(--primary-black);">5. 개인정보처리방침 변경</h2>
+          
+          <p class="text-sm sm:text-base leading-relaxed text-gray-600">
+            본 개인정보처리방침은 법률 변경이나 서비스 정책 변경에 따라 
+            예고 없이 수정될 수 있습니다. 변경사항은 이 페이지에 공지되며, 
+            중요한 변경의 경우 별도의 공지를 할 수 있습니다.
+          </p>
+        </section>
+
+        <!-- Divider -->
+        <hr class="border-gray-300" style="opacity: 0.3;" />
+
+        <!-- Section 7: 연락처 -->
+        <section>
+          <h2 class="font-title text-2xl mb-4" style="color: var(--primary-black);">6. 문의</h2>
+          
+          <p class="text-sm sm:text-base leading-relaxed text-gray-600 mb-4">
+            개인정보처리방침 및 서비스에 대한 문의사항이 있으시면 아래로 연락 주시기 바랍니다.
+          </p>
+
+          <div class="bg-blue-50 p-4 rounded-lg" style="background: rgba(49, 130, 246, 0.1);">
+            <p class="text-sm font-semibold mb-2">옐로우독 소프트</p>
+            <p class="text-sm">이메일: <a href="mailto:help@yellowdog.soft" style="color: var(--primary-blue); text-decoration: underline;">help@yellowdog.soft</a></p>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Footer & Back Button -->
+      <div class="flex justify-center mb-12">
+        <a href="/" class="back-button">← 메인으로 돌아가기</a>
+      </div>
+
+      <!-- Copyright -->
+      <div class="text-center text-xs text-gray-400 pb-8">
+        <p>© 2026 Yellow Dog Soft. All rights reserved.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+      themeToggle.textContent = '☀️';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      themeToggle.textContent = isDark ? '☀️' : '🌙';
+    });
+  </script>
+</body>
+</html>

@@ -51,7 +51,7 @@
       background: linear-gradient(135deg, #F5F5F5 0%, #EFEFEF 100%);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
       color: var(--text-dark);
-      overflow: hidden;
+      overflow-y: auto;
     }
 
     /* Typography */
@@ -267,6 +267,18 @@
       color: #e0e0e0 !important;
     }
 
+    body.dark-mode .text-gray-600 {
+      color: #b0b0b0 !important;
+    }
+
+    body.dark-mode h2, body.dark-mode h3 {
+      color: #ffffff !important;
+    }
+
+    body.dark-mode article h3 {
+      color: var(--primary-blue) !important;
+    }
+
     body.dark-mode .timer-display {
       color: var(--primary-blue) !important;
     }
@@ -371,10 +383,69 @@
         </div> -->
       </div>
 
+      <!-- ============================================================ -->
+      <!-- SEO Content Sections (애드센스 승인용 정보성 콘텐츠)         -->
+      <!-- ============================================================ -->
+      <div class="w-full max-w-sm mx-auto px-2 mt-2 mb-4 space-y-5">
+
+        <!-- Section 1: 정보성 콘텐츠 -->
+        <article class="card-elevated p-5">
+          <h2 class="font-title text-lg mb-3" style="color: var(--primary-black); letter-spacing: -0.02em;">
+            1초의 미학, 인간의 반응 속도 한계는 어디까지일까?
+          </h2>
+          <p class="text-sm leading-relaxed text-gray-600 mb-3">
+            일상에서 '1초'는 눈 깜짝할 사이에 지나가는 짧은 시간이지만, 스포츠나 정밀한 타이밍 게임에서는 승패를 가르는 결정적인 순간입니다. 인간의 평균 시각적 반응 속도는 약 <strong>0.25초(250ms)</strong>로 알려져 있습니다. 눈으로 빛이나 움직임을 인식하고, 뇌를 거쳐 손가락 근육으로 명령이 전달되기까지 걸리는 생물학적 시간입니다.
+          </p>
+          <p class="text-sm leading-relaxed text-gray-600">
+            <strong>&lt;오늘의 승부: 1초 내기&gt;</strong>는 단순한 운에 기대는 것이 아닌, 플레이어의 고도의 집중력과 미세한 근육 통제력을 테스트하는 정밀 유틸리티입니다. 타이머가 0.0000초에서 시작해 정확히 1.0000초에 도달하는 찰나의 순간을 잡아내기 위해서는, 화면의 변화를 예측하고 본인의 반응 속도를 역산하여 터치하는 고도의 훈련이 필요합니다. 매일 꾸준히 도전하며 당신의 동체 시력과 반응 신경을 한계까지 끌어올려 보세요.
+          </p>
+        </article>
+
+        <!-- Section 2: 브랜드 스토리 -->
+        <article class="card-elevated p-5">
+          <h2 class="font-title text-lg mb-3" style="color: var(--primary-black); letter-spacing: -0.02em;">
+            옐로우독 소프트의 마스코트, '호구(누렁이)'의 탄생
+          </h2>
+          <p class="text-sm leading-relaxed text-gray-600 mb-3">
+            화면 중앙에서 여러분의 도전을 지켜보는 얄밉고도 귀여운 강아지, 바로 <strong>옐로우독 소프트(Yellow Dog Soft)</strong>의 공식 마스코트 <strong>'누렁이(애칭: 호구)'</strong>입니다. 오일 파스텔의 따뜻한 질감으로 그려진 이 녀석은, 평소에는 해맑게 웃고 있지만 여러분이 1초 맞추기에 미세하게 실패하는 순간 혀를 내밀며 약을 올리거나 눈물을 찔끔 흘리는 등 다채로운 매력을 뽐냅니다.
+          </p>
+          <p class="text-sm leading-relaxed text-gray-600">
+            완벽하게 1.0000초를 맞췄을 때만 볼 수 있는 누렁이의 특별한 환호 세리머니를 수집해 보세요. 옐로우독 소프트는 앞으로도 이 귀여운 똥개 캐릭터를 활용해 일상에 소소한 도파민을 선사하는 다양한 웹 서비스를 선보일 예정입니다.
+          </p>
+        </article>
+
+        <!-- Section 3: FAQ -->
+        <article class="card-elevated p-5">
+          <h2 class="font-title text-lg mb-4" style="color: var(--primary-black); letter-spacing: -0.02em;">
+            플레이 가이드 및 자주 묻는 질문 (FAQ)
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-sm font-bold mb-1" style="color: var(--primary-blue);">Q. 어떻게 플레이하나요?</h3>
+              <p class="text-sm leading-relaxed text-gray-600">1.0초, 3.0초, 5.0초 중 원하는 난이도의 모드를 선택한 후 <strong>[시작]</strong> 버튼을 누릅니다. 숫자가 올라가는 것을 보고 목표 시간에 정확히 도달했다고 생각될 때 <strong>[정지]</strong> 버튼을 누르세요.</p>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold mb-1" style="color: var(--primary-blue);">Q. 오차 범위는 어떻게 계산되나요?</h3>
+              <p class="text-sm leading-relaxed text-gray-600">목표 시간(예: 1초)과 사용자가 버튼을 누른 실제 시간의 차이를 <strong>소수점 네 자리까지</strong> 정밀하게 계산하여 보여줍니다. 오차가 0.0000초일 때 완벽한 성공으로 간주합니다.</p>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold mb-1" style="color: var(--primary-blue);">Q. 최고 기록은 어떻게 저장되나요?</h3>
+              <p class="text-sm leading-relaxed text-gray-600">사용자의 브라우저 <strong>로컬 스토리지(Local Storage)</strong>를 활용하여 기기 내에 안전하게 저장됩니다. 앱을 껐다 켜도 본인의 가장 완벽했던 기록을 언제든 확인할 수 있습니다.</p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
       <!-- Footer - Minimal -->
-      <footer class="text-center text-xs text-gray-400 mt-3 mb-2 px-2 leading-tight flex-shrink-0">
+      <footer class="text-center text-xs text-gray-400 mt-3 mb-6 px-2 leading-tight flex-shrink-0">
         <p>(주)옐로우독 소프트 | 대왕누렁이</p>
         <p class="mt-0.5">help@yellowdog.soft</p>
+        <p class="mt-1">
+          <a href="/privacy" style="color: var(--primary-blue); text-decoration: underline; font-size: 12px;">
+            개인정보처리방침
+          </a>
+        </p>
         <p class="mt-0.5 text-gray-500">© 2026 Yellow Dog Soft</p>
       </footer>
     </div>
@@ -582,7 +653,8 @@
         iso: new Date().toISOString()
       };
 
-      if (!prev || candidate.mode !== prev.mode || candidate.diff < prev.diff) {
+      const isNewBest = !prev || candidate.mode !== prev.mode || candidate.diff < prev.diff;
+      if (isNewBest) {
         saveBest(candidate);
         if (perfect || nearMiss) {
           vibrate([50, 30, 50, 30, 50]);
@@ -597,6 +669,17 @@
         is_perfect: perfect,
         is_near_miss: nearMiss
       });
+
+      // [C] 전면 광고 트리거: 5회 플레이마다 또는 최고기록 경신 시
+      const PLAY_COUNT_KEY = 'hogu_play_count';
+      const playCount = (parseInt(localStorage.getItem(PLAY_COUNT_KEY) || '0') + 1);
+      localStorage.setItem(PLAY_COUNT_KEY, String(playCount));
+
+      const shouldShowInterstitial = (playCount % 5 === 0) || isNewBest;
+      if (shouldShowInterstitial) {
+        // 결과를 먼저 보여주고 1초 후 전면 광고 표시
+        setTimeout(() => showInterstitialAd(), 1000);
+      }
 
       setState(stateEnum.RESULT);
     }
@@ -796,6 +879,17 @@
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         themeToggle.textContent = isDark ? '☀️' : '🌙';
       });
+
+      // 전면 광고 닫기 버튼
+      document.getElementById('adInterstitialClose').addEventListener('click', hideInterstitialAd);
+      document.getElementById('adInterstitialContinue').addEventListener('click', hideInterstitialAd);
+      // 오버레이 배경 클릭 시 닫기
+      document.getElementById('adInterstitial').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('adInterstitial')) hideInterstitialAd();
+      });
+
+      // AdSense 초기화
+      initAds();
     }
 
     init();
