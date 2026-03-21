@@ -294,10 +294,47 @@
     body.dark-mode #themeToggle {
       background: var(--primary-blue) !important;
     }
+
+    /* SEO Details/Accordion Styling */
+    details {
+      margin: 0;
+      padding: 0;
+    }
+
+    summary {
+      outline: none;
+      user-select: none;
+      padding: 12px 0;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    summary:hover {
+      opacity: 0.8;
+    }
+
+    details[open] summary {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode details[open] summary {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Dark mode separator */
+    body.dark-mode .seo-separator {
+      background: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    body.dark-mode .seo-separator-text {
+      color: #666 !important;
+    }
   </style>
 </head>
 <body>
-  <div id="app" class="flex flex-col items-center justify-center min-h-screen w-full p-2 sm:p-4 overflow-hidden">
+  <div id="app" class="flex flex-col items-center justify-center min-h-screen w-full p-2 sm:p-4 overflow-y-auto">
     <!-- Canvas for confetti -->
     <canvas id="confettiCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
 
@@ -384,14 +421,23 @@
       </div>
 
       <!-- ============================================================ -->
+      <!-- Separator -->
+      <!-- ============================================================ -->
+      <div class="w-full max-w-sm mx-auto px-2 py-12 flex items-center gap-3">
+        <div class="flex-1 h-px seo-separator" style="background: rgba(0,0,0,0.08);"></div>
+        <span class="text-xs text-gray-400 seo-separator-text">추가 정보</span>
+        <div class="flex-1 h-px seo-separator" style="background: rgba(0,0,0,0.08);"></div>
+      </div>
+
+      <!-- ============================================================ -->
       <!-- SEO Content Sections (Accordion - 기본 닫힘 상태)          -->
       <!-- ============================================================ -->
-      <details class="w-full max-w-sm mx-auto px-2 mt-8 mb-4">
-        <summary style="cursor: pointer; color: var(--primary-blue); font-size: 14px; font-weight: 600; user-select: none;">
-          ℹ️ 오늘의 누렁이 가이드 보기 ▼
+      <details class="w-full max-w-sm mx-auto px-2 mb-12">
+        <summary style="color: #999; font-size: 12px; font-weight: 500; user-select: none; text-align: center; padding: 8px 0;">
+          ℹ️ 오늘의 누렁이 가이드 보기
         </summary>
         
-        <div class="mt-4 space-y-5">
+        <div class="mt-6 space-y-5">
           <!-- Section 1: 정보성 콘텐츠 -->
           <article class="card-elevated p-5">
             <h2 class="font-title text-lg mb-3" style="color: var(--primary-black); letter-spacing: -0.02em;">
@@ -442,7 +488,7 @@
       </details>
 
       <!-- Footer - Minimal -->
-      <footer class="text-center text-xs text-gray-400 mt-3 mb-6 px-2 leading-tight flex-shrink-0">
+      <footer class="text-center text-xs text-gray-400 mt-8 mb-6 px-2 leading-tight flex-shrink-0">
         <p>(주)옐로우독 소프트 | 대왕누렁이</p>
         <p class="mt-0.5">help@yellowdog.soft</p>
         <p class="mt-1">
