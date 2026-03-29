@@ -12,6 +12,11 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7131097211973536"
      crossorigin="anonymous"></script>
 
+  <!-- Kakao JavaScript SDK -->
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"
+    integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+    crossorigin="anonymous"></script>
+
   <!-- Google Fonts: Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -418,6 +423,18 @@
           </button>
         </div>
 
+        <!-- Kakao Share Button - 결과 화면에서만 표시 -->
+        <div id="kakaoShareArea" class="hidden mb-3">
+          <button id="kakaoShareBtn"
+            class="w-full py-3 rounded-lg text-sm font-bold flex items-center justify-center gap-2"
+            style="background: #FEE500; color: #191919; border: none; cursor: pointer; line-height: 1; transition: opacity 0.2s;">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 1.5C4.86 1.5 1.5 4.11 1.5 7.35c0 2.07 1.35 3.9 3.39 4.98l-.87 3.24a.28.28 0 0 0 .42.3L8.1 13.5c.3.03.6.045.9.045 4.14 0 7.5-2.61 7.5-5.85S13.14 1.5 9 1.5z" fill="#191919"/>
+            </svg>
+            카카오톡으로 공유하기
+          </button>
+        </div>
+
         <!-- Ads Placeholder - 추후 Toss 인앱 통합 후 구현 예정 -->
         <!-- <div id="toss-ad-banner" class="h-12 flex items-center justify-center border border-dashed border-gray-300 rounded-lg text-xs text-gray-400 bg-gray-50" style="opacity: 0.7;">
           Toss Ads
@@ -479,6 +496,14 @@
     </div>
   </div>
 
+  <!-- Toast 메시지 -->
+  <div id="toastMsg"
+    style="position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+           background: rgba(25,25,25,0.88); color: #fff; padding: 10px 20px; border-radius: 24px;
+           font-size: 13px; font-weight: 600; white-space: nowrap; z-index: 9999;
+           opacity: 0; transition: opacity 0.25s ease, transform 0.25s ease; pointer-events: none;">
+  </div>
+
   <script type="module">
     // ============================================================
     // GAME STATE & CONFIGURATION
@@ -492,6 +517,83 @@
     let targetSeconds = 1.0;
     let lastDuration = null;
     let currentMode = 1;
+
+    // ============================================================
+    // KAKAO SDK
+    // ============================================================
+    const KAKAO_APP_KEY = 'YOUR_KAKAO_JS_APP_KEY'; // ← 카카오 디벨로퍼스에서 발급받은 JS 앱 키로 교체
+    const SITE_URL = 'https://today-hogu.vercel.app/';
+    const OG_IMAGE_URL = 'https://today-hogu.vercel.app/assets/shiba.jpg';
+
+    function initKakao() {
+      if (!window.Kakao) return;
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init(KAKAO_APP_KEY);
+      }
+    }
+
+    function shareKakao() {
+      if (!window.Kakao || !window.Kakao.isInitialized()) {
+        showToast('카카오 SDK를 불러오는 중이에요. 잠시 후 다시 시도해주세요.');
+        return;
+      }
+
+      const rounded = lastDuration ? Math.round(lastDuration * 10000) / 10000 : null;
+      const diff = rounded !== null ? Math.abs(rounded - targetSeconds) : null;
+
+      const title = rounded !== null
+        ? `나 지금 ${rounded.toFixed(4)}초 기록함! 너도 해보든가`
+        : '오늘의 누렁이 : 1초 내기 도전!';
+
+      const description = diff !== null
+        ? `오차 ${diff.toFixed(4)}초 — ${targetSeconds}초 모드 도전 중! 0.0001초의 승부, 당신의 반응 속도를 테스트하세요.`
+        : '0.0001초의 승부, 오늘의 누렁이에서 당신의 반응 속도를 테스트하세요.';
+
+      try {
+        window.Kakao.Share.sendDefault({
+          objectType: 'feed',
+          content: {
+            title,
+            description,
+            imageUrl: OG_IMAGE_URL,
+            link: {
+              mobileWebUrl: SITE_URL,
+              webUrl: SITE_URL,
+            },
+          },
+          buttons: [
+            {
+              title: '나도 도전하기',
+              link: {
+                mobileWebUrl: SITE_URL,
+                webUrl: SITE_URL,
+              },
+            },
+          ],
+          installTalk: true,
+        });
+        logEvent('share_kakao', { duration: rounded, diff });
+      } catch (err) {
+        console.error('[Kakao Share Error]', err);
+        showToast('카카오톡 공유에 실패했어요 😢');
+      }
+    }
+
+    // ============================================================
+    // TOAST MESSAGE
+    // ============================================================
+    let toastTimer = null;
+    function showToast(msg, duration = 2500) {
+      const el = document.getElementById('toastMsg');
+      el.textContent = msg;
+      el.style.opacity = '1';
+      el.style.transform = 'translateX(-50%) translateY(0)';
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(-50%) translateY(20px)';
+      }, duration);
+    }
 
     // DOM Elements
     const timerDisplay = document.getElementById('timerDisplay');
@@ -564,6 +666,7 @@
         timerDisplay.textContent = '?.????';
         statusMsg.textContent = '시작 버튼을 눌러주세요';
         resultSection.classList.add('hidden');
+        document.getElementById('kakaoShareArea').classList.add('hidden');
         
         // Mode-specific idle messages
         if (targetSeconds === 1) {
@@ -580,11 +683,13 @@
         timerDisplay.textContent = '?.????';
         statusMsg.textContent = '정확하게 멈춰보세요!';
         characterMessage.textContent = '오... 그래, 한 번 해봐요.';
+        document.getElementById('kakaoShareArea').classList.add('hidden');
       } else if (appState === stateEnum.RESULT) {
         actionBtn.textContent = '다시하기';
         actionBtn.classList.add('btn-primary');
         actionBtn.classList.remove('btn-secondary');
         resultSection.classList.remove('hidden');
+        document.getElementById('kakaoShareArea').classList.remove('hidden');
       }
     }
 
@@ -868,6 +973,12 @@
         updateBestUI();
         logEvent('mode_changed', { mode: m });
       });
+
+    // Kakao Share Button
+    document.getElementById('kakaoShareBtn').addEventListener('click', () => {
+      vibrate(30);
+      shareKakao();
+    });
     });
 
     // ============================================================
@@ -878,6 +989,9 @@
       setState(stateEnum.IDLE);
       logEvent('app_launch', { timestamp: new Date().toISOString() });
       // logEvent('ad_impression', { type: 'banner' }); // 추후 광고 통합 후 활성화
+
+      // Kakao SDK 초기화
+      initKakao();
 
       document.addEventListener(
         'touchmove',
